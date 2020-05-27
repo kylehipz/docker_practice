@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  customers:
+    build:
+      context: ./services/customers
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/customers:/usr/src/app
+    ports:
+      - 8000:8000
+    restart: always
+  products:
+    build:
+      context: ./services/products
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/products:/usr/src/app
+    ports:
+      - 8001:8000
+    restart: always
+  orders:
+    build:
+      context: ./services/orders
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/orders:/usr/src/app
+    ports:
+      - 8002:8000
+    restart: always
+  auth:
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/auth:/usr/src/app
+    ports:
+      - 8003:8000
+    restart: always
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: ecommerce-client
+    container_name: ecommerce-client-container
+    #command: npm start
+    volumes:
+      - ./client:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - auth
+      - customers
+      - products
+      - orders
+    ports:
+      - 3000:3000
+    stdin_open: true
+volumes:
+  node_modules:
